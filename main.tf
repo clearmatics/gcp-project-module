@@ -23,7 +23,7 @@ resource "google_project" "project" {
 resource "google_project_service" "services" {
   for_each           = var.services
   service            = each.key
-  project            = google_project.project.id
+  project            = google_project.project.project_id
   disable_on_destroy = false
   depends_on         = ["google_project.project"]
 }
@@ -31,7 +31,7 @@ resource "google_project_service" "services" {
 resource "google_service_account" "ci_account" {
   account_id   = var.service_account_name
   display_name = var.service_account_name
-  project      = google_project.project.id
+  project      = google_project.project.project_id
   depends_on   = ["google_project.project"]
 }
 
