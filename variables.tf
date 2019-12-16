@@ -59,7 +59,7 @@ variable "viewers" {
 }
 
 variable "region" {
-  default = "eu-west-2"
+  default = "europe-west2"
 }
 
 
