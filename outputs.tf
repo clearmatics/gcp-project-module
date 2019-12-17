@@ -1,4 +1,3 @@
-
 output "project_name" {
   value = google_project.project.name
 }

@@ -1,4 +1,4 @@
-//this doesn't seem to make sense but its the best way to trivially supply either an org or a folder as a parent
+// This doesn't seem to make sense but its the best way to trivially supply either an org or a folder as a parent
 resource "google_folder" "folder" {
   display_name = var.name
   parent       = var.parent
@@ -51,8 +51,6 @@ locals {
   ]
 }
 
-
-//i may be being too explicit here as i'm sure some roles contain others, but i don't think it's an issue
 data "google_iam_policy" "folder_policy" {
   binding {
     role = "roles/owner"
@@ -90,11 +88,13 @@ data "google_iam_policy" "folder_policy" {
     members = toset(concat(var.owners, var.developers, var.viewers))
   }
   binding {
-    role    = "roles/cloudbuild.builds.viewer"
+    role = "roles/cloudbuild.builds.viewer"
+
     members = toset(concat(var.owners, var.developers, var.viewers))
   }
   binding {
-    role    = "roles/cloudbuild.builds.builder"
+    role = "roles/cloudbuild.builds.builder"
+
     members = toset(concat(var.owners, var.developers, var.viewers))
   }
 }
