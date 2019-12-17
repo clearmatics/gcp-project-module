@@ -3,7 +3,6 @@ variable "name" {
   type        = "string"
 }
 
-
 variable "parent" {
   description = "the parent id of the object this will live under (folder or organisation)"
   type        = "string"
@@ -15,6 +14,7 @@ variable "billing_id" {
   type        = "string"
 
 }
+
 // Possibly split services into core_services and additional_services (so that core services never need to be respecified)
 variable "services" {
   description = "List of services to be enabled on the project"
@@ -34,9 +34,8 @@ variable "services" {
   ]
 }
 
-
 variable "service_account_name" {
-  description = "The name of the service account. Note: full service account e-mail must be less than 63 chracters, or it breaks kubergrunt/tiller setup"
+  description = "The name of the service account"
   default     = "ci-account"
 }
 
@@ -61,7 +60,6 @@ variable "viewers" {
 variable "region" {
   default = "europe-west2"
 }
-
 
 variable "suffix_length" {
   default = 4
