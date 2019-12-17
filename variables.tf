@@ -35,7 +35,7 @@ variable "services" {
 }
 
 variable "service_account_name" {
-  description = "The name of the service account. Note: full service account e-mail must be less than 63 chracters, or it breaks kubergrunt/tiller setup"
+  description = "The name of the service account"
   default     = "ci-account"
 }
 
