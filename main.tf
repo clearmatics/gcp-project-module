@@ -21,7 +21,7 @@ resource "google_project" "project" {
 }
 
 resource "google_project_service" "services" {
-  for_each           = var.services
+  for_each           = toset(distinct(concat(var.services, ["cloudbuild.googleapis.com"])))
   service            = each.key
   project            = google_project.project.project_id
   disable_on_destroy = false
@@ -35,13 +35,28 @@ resource "google_service_account" "ci_account" {
   depends_on   = ["google_project.project"]
 }
 
+
+resource "null_resource" "delay" {
+  provisioner "local-exec" {
+    command = "sleep 30"
+  }
+  triggers = {
+    "ci_account"              = google_service_account.ci_account.id
+    "google_project_services" = google_project_service.services["cloudbuild.googleapis.com"].id
+  }
+}
+
 resource "google_service_account_key" "ci_account" {
   service_account_id = google_service_account.ci_account.name
+  depends_on         = ["null_resource.delay"]
+
 }
 
 resource "google_folder_iam_policy" "iam_policy" {
   folder      = google_folder.folder.name
   policy_data = data.google_iam_policy.folder_policy.policy_data
+  depends_on  = ["null_resource.delay"]
+
 }
 
 locals {
@@ -99,6 +114,8 @@ data "google_iam_policy" "folder_policy" {
   }
 }
 
+
+
 resource "random_uuid" "tfstate-bucket-name" {}
 
 resource "google_storage_bucket" "terraform_state" {
@@ -111,7 +128,9 @@ resource "google_storage_bucket_iam_binding" "terraform_state_binding" {
   bucket = "${google_storage_bucket.terraform_state.name}"
   role   = "roles/storage.objectAdmin"
 
-  members = local.service_accounts
+  members    = local.service_accounts
+  depends_on = ["null_resource.delay"]
+
 }
 
 resource "google_storage_bucket" "cloudbuild_bucket" {
@@ -123,12 +142,16 @@ resource "google_storage_bucket_iam_binding" "cloudbuild_bucket_admin_binding" {
   bucket = "${google_storage_bucket.cloudbuild_bucket.name}"
   role   = "roles/storage.objectAdmin"
 
-  members = local.service_accounts
+  members    = local.service_accounts
+  depends_on = ["null_resource.delay"]
+
 }
 
 resource "google_storage_bucket_iam_binding" "cloudbuild_bucket_viewer_binding" {
   bucket = "${google_storage_bucket.cloudbuild_bucket.name}"
   role   = "roles/storage.objectViewer"
 
-  members = concat(var.owners, var.developers, var.viewers, local.service_accounts)
+  members    = concat(var.owners, var.developers, var.viewers, local.service_accounts)
+  depends_on = ["null_resource.delay"]
+
 }
