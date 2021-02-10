@@ -13,8 +13,3 @@ output "terraform_state_bucket_name" {
 output "service_account_email" {
   value = google_service_account.ci_account.email
 }
-
-output "service_account_private_key" {
-  value     = google_service_account_key.ci_account.private_key
-  sensitive = true
-}
