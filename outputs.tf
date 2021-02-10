@@ -18,8 +18,3 @@ output "service_account_private_key" {
   value     = google_service_account_key.ci_account.private_key
   sensitive = true
 }
-
-output "service_account_private_key_fingerprint" {
-  value     = google_service_account_key.ci_account.private_key_fingerprint
-  sensitive = true
-}
