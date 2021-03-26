@@ -9,6 +9,7 @@ resource "random_string" "project_suffix" {
   special = false
   lower   = false
   upper   = false
+
 }
 
 resource "google_project" "project" {
@@ -32,6 +33,10 @@ resource "google_service_account" "ci_account" {
   display_name = var.service_account_name
   project      = google_project.project.project_id
   depends_on   = ["google_project.project"]
+}
+
+resource "google_service_account_key" "ci_account" {
+  service_account_id = google_service_account.ci_account.name
 }
 
 resource "google_folder_iam_policy" "iam_policy" {
